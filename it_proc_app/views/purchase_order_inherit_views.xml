@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+
+    <!-- IT Procurement Purchase Order Tree View -->
+    <record id="it_procurement_purchase_order_tree" model="ir.ui.view">
+        <field name="name">it.procurement.purchase.order.tree</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="priority">1000</field>
+
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+
+            <field name="date_planned" position="after">
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-primary="state == 'coo'"
+                       decoration-success="state == 'md'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-warning="state == 'purchase'"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!-- IT Procurement Purchase Order Form View -->
+    <record id="it_procurement_purchase_order_form" model="ir.ui.view">
+        <field name="name">it.procurement.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="priority">1000</field>
+
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <header position="replace">
+                <header>
+                    <field name="reject_invisible" invisible="1"/>
+                    <button name="action_draft"
+                            string="Submit"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ('draft')"
+                            groups="it_proc_app.group_procurement_team"/>
+
+                    <button name="action_coo_confirm"
+                            string="Confirm"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ('coo')"
+                            groups="it_proc_app.group_coo"/>
+
+                    <button name="action_md_approve"
+                            string="Approve"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ('md')"
+                            groups="it_proc_app.group_md"/>
+
+<!--                    <button name="action_rejected"-->
+<!--                            string="Reject"-->
+<!--                            type="object"-->
+<!--                            class="oe_highlight"-->
+<!--                            invisible="state in ('draft', 'rejected', 'md', 'purchase')"-->
+<!--                            groups="it_proc_app.group_coo"/>-->
+
+
+<!--                    <button name="action_rejected"-->
+<!--                            string="Reject"-->
+<!--                            type="object"-->
+<!--                            class="oe_highlight"-->
+<!--                            invisible="state in ('draft', 'rejected', 'coo', 'purchase')"-->
+<!--                            groups="it_proc_app.group_md"/>-->
+
+                    <button name="action_rejected"
+                            string="Reject"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="reject_invisible"/>
+
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,coo,md,purchase" readonly="1"/>
+                </header>
+            </header>
+        </field>
+    </record>
+
+
+    <!-- Custom Action for Purchase Orders (Procurement Team) -->
+    <record id="action_it_purchase_orders" model="ir.actions.act_window">
+        <field name="name">Purchase Orders</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('it_procurement_purchase_order_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('it_procurement_purchase_order_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new purchase order
+            </p>
+        </field>
+    </record>
+
+
+</odoo>

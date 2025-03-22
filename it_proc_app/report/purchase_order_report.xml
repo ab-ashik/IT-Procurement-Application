@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+    <template id="report_purchase_order_document">
+
+        <t t-call="web.internal_layout">
+            <style>
+                @page {
+                margin-top: 0px !important; /* Remove top margin */
+                }
+
+                .page {
+                margin-top: 0px !important; /* Remove page specific margin */
+                }
+            </style>
+
+            <div class="page">
+                <!-- Header with Company Logo and Title -->
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h1>Purchase Order</h1>
+                    </div>
+                    <div class="col-6 text-right">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(res_company.logo)"
+                             style="max-height: 80px;" alt="Logo"/>
+                        <div class="mt-2">
+                            <div>Date:
+                                <span t-field="o.date_order" t-options='{"format": "dd/MM/yyyy HH:mm:ss"}'/>
+                            </div>
+                            <div>PO No:
+                                <span t-field="o.name"/>
+                            </div>
+                            <div>QTN Ref:
+                                <span t-field="o.origin"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vendor and Company Information -->
+                <div class="row mb-4">
+                    <div class="col-6 border" style="padding: 10px;">
+                        <!--                            <strong>PO Issued To:</strong>-->
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <h3 class="text-center" style="background-color: #adb5bd; padding:4px">PO Issued
+                                        To:
+                                    </h3>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 2px; width: 25%;">Vendor Name</td>
+                                    <td style="padding: 2px;">
+                                        <span t-field="o.partner_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 2px;">Address</td>
+                                    <td style="padding: 2px;">
+                                        <span t-field="o.partner_id.street"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 2px;">Phone</td>
+                                    <td style="padding: 2px;">
+                                        <span t-field="o.partner_id.phone"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 2px;">Email</td>
+                                    <td style="padding: 2px;">
+                                        <span t-field="o.partner_id.email"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-6 border" style="padding: 10px;">
+
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <h3 class="text-center" style="background-color: #adb5bd; padding:4px">Bill To:</h3>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 2px;">
+                                        <span t-field="res_company.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 2px;">
+                                        <span t-field="res_company.street"/>,
+                                        <span t-field="res_company.street2"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 2px;">
+                                        <span t-field="res_company.city"/>,
+                                        <span t-field="res_company.country_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 2px;">
+                                        <span class="bi bi-telephone" t-field="res_company.phone"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Subject Line -->
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <strong>Subject: Laptop For new Employees</strong>
+                    </div>
+                </div>
+
+                <!-- Brief Description Text -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <p>Regarding your quotation and price negotiation, our management is pleased to place the
+                            purchase order for Laptop For new Employees per terms and condition mention below:
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Order Lines -->
+                <table class="table table-bordered" style="border: 1px solid black;">
+                    <thead style="background-color: #adb5bd;">
+                        <tr>
+                            <th class="text-left">Component</th>
+                            <th class="text-center">UOM</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Unit Price</th>
+                            <th class="text-center">T.Price(Tk)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.order_line" t-as="line">
+                            <td>
+                                <span t-field="line.product_id.name"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.product_uom.name"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.product_qty"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.price_unit"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.price_subtotal"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right">
+                                <strong>Sub - Total</strong>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="o.amount_untaxed"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Total Section -->
+                <table class="table table-bordered" style="border: 1px solid black;">
+                    <tr>
+                        <td colspan="2">(Annex-A) Grand Total for Service Excluding VAT but Including AIT</td>
+                        <td class="text-center" style="width: 30%;">
+                            <span t-field="o.amount_untaxed"
+                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">VAT</td>
+                        <td class="text-center">
+                            <span t-field="o.amount_tax"
+                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Grand Total Including VAT and AIT</td>
+                        <td class="text-center">
+                            <span t-field="o.amount_total"
+                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Total in Words -->
+                <!--                <div class="row mb-4 mt-4">-->
+                <div class="col-12">
+                    <strong>Total Price:
+                        <span t-field="o.amount_total"
+                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        ৳
+                    </strong>
+                </div>
+                <div class="col-12">
+                    <span>In Word:
+                        <span t-field="o.amount_text"/>
+                    </span>
+                </div>
+                <!--                </div>-->
+
+                <!-- Terms and Conditions -->
+                <!--                <div class="row mb-4">-->
+                <div class="col-12">
+                    <strong>Standard Terms and Conditions:</strong>
+                    <span>VAT and TAX: Complied as per Govt Rules</span>
+                </div>
+                <div class="col-12">
+                    <strong>Payment Terms</strong>
+                </div>
+                <div class="col-12">
+                    <strong>Bill/Challan:</strong>
+                    <span>Two [2] sets of bill and challan must be submitted with the products in your company
+                        pad.
+                    </span>
+                </div>
+                <div class="col-12">
+                    <strong>Delivery Location:</strong>
+                    <div>
+                        <span t-field="o.company_id.name"/>
+                    </div>
+                    <div>
+                        <span t-field="o.company_id.street"/>,
+                        <span t-field="o.company_id.street2"/>
+                    </div>
+                    <div>
+                        <span t-field="o.company_id.city"/>,
+                        <span t-field="o.company_id.country_id.name"/>
+                    </div>
+                    <div>
+                        <span t-field="o.company_id.phone"/>
+                    </div>
+                </div>
+                <!--                </div>-->
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <p>If the mentioned terms and conditions are acceptable to you, you are requested to sign
+                            the duplicate copy as a token of your acceptance.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Signature Section -->
+                <div class="row" style="margin-top: 80px;">
+                    <div class="col-4 text-center" style="border-top: 1px solid black;">
+                        <!-- COO Digital Signature -->
+                        <t t-if="o.state in ('purchase')">
+                            <img t-att-src="'/it_procurement/static/img/coo_signature.png'"
+                                 style="max-height: 50px;" alt="COO Signature"/>
+                        </t>
+                        <p>Administrator</p>
+                        <p>
+                            <strong>COO</strong>
+                        </p>
+                        <p>cc: CFO
+                            <span t-field="o.company_id.name"/>
+                        </p>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                    <div class="col-4 text-center" style="border-top: 1px solid black;">
+                        <!-- MD Digital Signature -->
+                        <t t-if="o.state == 'purchase'">
+                            <img t-att-src="'/it_procurement/static/img/md_signature.png'" style="max-height: 50px;"
+                                 alt="MD Signature"/>
+                        </t>
+                        <p>Akash BA</p>
+                        <p>
+                            <strong>Managing Director</strong>
+                        </p>
+                        <p>cc: CFO
+                            <span t-field="o.company_id.name"/>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer with Address -->
+                <div class="row" style="margin-top: 40px; border-top: 1px solid black; padding-top: 10px;">
+                    <div class="col-12 text-center small">
+                        <p>
+                            <span t-field="o.company_id.name"/>
+                            <br/>
+                            <span t-field="o.company_id.street"/>
+                            <t t-if="o.company_id.street2">,
+                                <span t-field="o.company_id.street2"/>
+                            </t>
+                            ,
+                            <span t-field="o.company_id.city"/>
+                            <t t-if="o.company_id.zip">-
+                                <span t-field="o.company_id.zip"/>
+                            </t>
+                            ,
+                            <span t-field="o.company_id.country_id.name"/>
+                            <br/>
+                            tel:
+                            <span t-field="o.company_id.phone"/>
+                            <t t-if="o.company_id.email">, Email:
+                                <span t-field="o.company_id.email"/>
+                            </t>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <template id="report_purchase_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="it_proc_app.report_purchase_order_document"/>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="action_report_purchase_order" model="ir.actions.report">
+        <field name="name">It Procurement Purchase Order</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">it_proc_app.report_purchase_order</field>
+        <field name="report_file">it_proc_app.report_purchase_order</field>
+        <field name="print_report_name">'It Procurement Purchase Order - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+</odoo>

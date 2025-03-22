@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+
+    <!-- IT Procurement Menu -->
+    <menuitem id="menu_it_proc_app_root"
+              name="IT Procurement"
+              sequence="10"/>
+
+
+    <!-- Menu items with group-specific actions -->
+    <menuitem id="menu_it_procurement_purchase"
+              name="Purchase Orders"
+              parent="menu_it_proc_app_root"
+              action="action_it_purchase_orders"
+              sequence="10"/>
+
+
+
+</odoo>

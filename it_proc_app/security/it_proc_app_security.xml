@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+
+    <!--    Groups-->
+    <record id="module_category_it_proc_app" model="ir.module.category">
+        <field name="name">IT Procurement Application</field>
+        <field name="description">User access level for IT Procurement Application</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!--    Procurement Team Group-->
+    <record id="group_procurement_team" model="res.groups">
+        <field name="name">Procurement Team</field>
+        <field name="category_id" ref="module_category_it_proc_app"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!--    COO Group-->
+    <record id="group_coo" model="res.groups">
+        <field name="name">Chief Operating Officer</field>
+        <field name="category_id" ref="module_category_it_proc_app"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- MD Group -->
+    <record id="group_md" model="res.groups">
+        <field name="name">Managing Director</field>
+        <field name="category_id" ref="module_category_it_proc_app"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+</odoo>
