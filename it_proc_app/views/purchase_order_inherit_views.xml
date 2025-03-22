@@ -17,7 +17,7 @@
                        decoration-info="state == 'draft'"
                        decoration-primary="state == 'coo'"
                        decoration-success="state == 'md'"
-                       decoration-danger="state == 'rejected'"
+                       decoration-danger="state == 'cancel'"
                        decoration-warning="state == 'purchase'"/>
             </field>
         </field>
@@ -58,20 +58,6 @@
                             invisible="state not in ('md')"
                             groups="it_proc_app.group_md"/>
 
-<!--                    <button name="action_rejected"-->
-<!--                            string="Reject"-->
-<!--                            type="object"-->
-<!--                            class="oe_highlight"-->
-<!--                            invisible="state in ('draft', 'rejected', 'md', 'purchase')"-->
-<!--                            groups="it_proc_app.group_coo"/>-->
-
-
-<!--                    <button name="action_rejected"-->
-<!--                            string="Reject"-->
-<!--                            type="object"-->
-<!--                            class="oe_highlight"-->
-<!--                            invisible="state in ('draft', 'rejected', 'coo', 'purchase')"-->
-<!--                            groups="it_proc_app.group_md"/>-->
 
                     <button name="action_rejected"
                             string="Reject"
@@ -79,9 +65,17 @@
                             class="oe_highlight"
                             invisible="reject_invisible"/>
 
+<!--                    <button name="action_add_signature" type="object"-->
+<!--                            string="Add Signature" class="oe_highlight"-->
+<!--                            groups="purchase.group_purchase_manager"-->
+<!--                            invisible="has_signature"/>-->
+
 
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,coo,md,purchase" readonly="1"/>
+
+
+                    <field name="has_signature" invisible="1"/>
                 </header>
             </header>
         </field>

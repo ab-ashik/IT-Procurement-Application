@@ -1,5 +1,3 @@
-from email.policy import default
-
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError, AccessError, ValidationError
 from num2words import num2words
@@ -14,12 +12,29 @@ class PurchaseOrderInherit(models.Model):
             ('coo', 'COO'),
             ('md', 'MD'),
             ('purchase', 'Purchase'),
-            ('rejected', 'Rejected'),
+            ('cancel', 'Cancelled'),
         ], string='State', default='draft', tracking=True
     )
 
     reject_invisible = fields.Boolean(compute='_compute_check', string='Check Order', default=True)
     amount_text = fields.Char(string='Amount', compute='_compute_amount_text')
+
+
+    has_signature = fields.Boolean(string="Has Signature", default=False)
+    signature_coo = fields.Binary(string="Signature", attachment=True)
+    signature_md = fields.Binary(string="Signature", attachment=True)
+
+
+    def action_add_signature(self):
+        return {
+            'name': 'Add Signature',
+            'type': 'ir.actions.act_window',
+            'res_model': 'purchase.order.signature.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_purchase_order_id': self.id}
+        }
+
 
 
     @api.depends('state')
@@ -33,6 +48,7 @@ class PurchaseOrderInherit(models.Model):
 
             else:
                 record.reject_invisible = True
+
 
     @api.depends('amount_text')
     def _compute_amount_text(self):
@@ -61,20 +77,34 @@ class PurchaseOrderInherit(models.Model):
             self.write({
                 'state': 'purchase'
             })
+            self.action_add_signature()
         else:
             self.write({
                 'state': 'md',
             })
+        return self.action_add_signature()
 
     def action_md_approve(self):
+        signatures = self.action_add_signature()
         self.write({
             'state': 'purchase',
         })
+        return signatures
+
 
     def action_rejected(self):
         self.write({
-            'state': 'rejected',
+            'state': 'cancel',
         })
+
+    def _send_vendor_notification(self, order):
+        self.ensure_one()
+        template = self.env.ref('it_proc_app.email_template_purchase_order_notification')
+
+        template.with_context(object=order).send_mail(
+            self.id,
+            force_send=True,
+        )
 
     @api.model
     def create(self, vals):
@@ -82,4 +112,9 @@ class PurchaseOrderInherit(models.Model):
         if not self.env.user.has_group('it_proc_app.group_procurement_team'):
             raise ValidationError("You do not have permission to create Purchase Orders.")
 
-        return super(PurchaseOrderInherit, self).create(vals)
+        result = super(PurchaseOrderInherit, self).create(vals)
+
+        for order in result:
+                order._send_vendor_notification(order)
+
+        return result

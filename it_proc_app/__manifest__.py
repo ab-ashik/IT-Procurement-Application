@@ -24,8 +24,11 @@ Long description of module's purpose
     'data': [
         'security/it_proc_app_security.xml',
         'security/ir.model.access.csv',
+        'data/mail_template.xml',
+        'wizard/signature_wizard_view.xml',
         'views/purchase_order_inherit_views.xml',
         'report/purchase_order_report.xml',
+
         'views/menus.xml',
     ],
     # only loaded in demonstration mode

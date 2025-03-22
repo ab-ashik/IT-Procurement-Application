@@ -4,7 +4,7 @@
 
     <template id="report_purchase_order_document">
 
-        <t t-call="web.internal_layout">
+        <t t-call="web.basic_layout">
             <style>
                 @page {
                 margin-top: 0px !important; /* Remove top margin */
@@ -204,7 +204,7 @@
                     <strong>Total Price:
                         <span t-field="o.amount_total"
                               t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                        ৳
+
                     </strong>
                 </div>
                 <div class="col-12">
@@ -258,12 +258,12 @@
 
                 <!-- Signature Section -->
                 <div class="row" style="margin-top: 80px;">
-                    <div class="col-4 text-center" style="border-top: 1px solid black;">
+                    <div class="col-4 text-center" style="">
                         <!-- COO Digital Signature -->
-                        <t t-if="o.state in ('purchase')">
-                            <img t-att-src="'/it_procurement/static/img/coo_signature.png'"
-                                 style="max-height: 50px;" alt="COO Signature"/>
+                        <t t-if="o.signature_coo">
+                            <img t-att-src="image_data_uri(o.signature_coo)" style="max-height: 100px; max-width: 200px;"/>
                         </t>
+                        <p>-----------------------</p>
                         <p>Administrator</p>
                         <p>
                             <strong>COO</strong>
@@ -274,12 +274,12 @@
                     </div>
                     <div class="col-4">
                     </div>
-                    <div class="col-4 text-center" style="border-top: 1px solid black;">
+                    <div class="col-4 text-center" style="">
                         <!-- MD Digital Signature -->
-                        <t t-if="o.state == 'purchase'">
-                            <img t-att-src="'/it_procurement/static/img/md_signature.png'" style="max-height: 50px;"
-                                 alt="MD Signature"/>
+                        <t t-if="o.signature_md">
+                            <img t-att-src="image_data_uri(o.signature_md)" style="max-height: 100px; max-width: 200px;"/>
                         </t>
+                        <p>--------------------</p>
                         <p>Akash BA</p>
                         <p>
                             <strong>Managing Director</strong>
@@ -316,6 +316,7 @@
                         </p>
                     </div>
                 </div>
+
             </div>
         </t>
     </template>
